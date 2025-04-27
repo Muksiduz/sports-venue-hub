@@ -18,6 +18,6 @@ router.post("/createbookings", isLoggedIn, createBookings);
 router.get("/bookings", isLoggedIn, getAllBookings);
 router.get("/bookings:bookingId", isLoggedIn, getSingleBookings);
 
-router.delete("/bookings:bookingId", isLoggedIn, deleteBookings);
+router.delete("/deletebookings:bookingId", isLoggedIn, deleteBookings);
 
 export default router;
