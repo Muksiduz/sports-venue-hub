@@ -5,19 +5,17 @@ const bookingSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     venueId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Venue",
-      required: true,
     },
     start_time: {
-      type: Date,
+      type: String, // e.g., "10:00 AM"
       required: true,
     },
     end_time: {
-      type: Date,
+      type: String, // e.g., "12:00 PM"
       required: true,
     },
     total_price: {

@@ -1,7 +1,6 @@
 import express from "express";
 import {
   createBookings,
-  deleteBookings,
   getAllBookings,
   getAllVenues,
   getSingleBookings,
@@ -12,12 +11,11 @@ import { isLoggedIn } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.get("/venues", isLoggedIn, getAllVenues);
-router.get("/venues:venueId", isLoggedIn, getSingleVenue);
+
+router.get("/venues/:id", isLoggedIn, getSingleVenue);
 
 router.post("/createbookings", isLoggedIn, createBookings);
 router.get("/bookings", isLoggedIn, getAllBookings);
-router.get("/bookings:bookingId", isLoggedIn, getSingleBookings);
-
-router.delete("/deletebookings:bookingId", isLoggedIn, deleteBookings);
+router.get("/bookings/:bookingId", isLoggedIn, getSingleBookings);
 
 export default router;

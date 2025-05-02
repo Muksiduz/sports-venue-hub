@@ -23,24 +23,28 @@ export const isVenueOwner = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    const user = await User.findById({ _id: decoded });
+    const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(404).json({
         message: "No user Found",
       });
     }
-    if (user.role !== "VENUEOWNER") {
+
+    if (user.role !== "VENUE") {
       return res.status(404).json({
         message: "You are not authorized",
       });
     }
+
+    console.log("hello");
+
     req.user = decoded;
     next();
   } catch (error) {
     res.status(500).json({
       sucess: false,
-      message: "Error in decoding Token",
+      message: "Error in decoding Token of venue ",
     });
   }
 };
@@ -51,7 +55,7 @@ export const isAdmin = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-    const user = await User.findById({ _id: decoded });
+    const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(404).json({

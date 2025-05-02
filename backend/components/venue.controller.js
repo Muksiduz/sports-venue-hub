@@ -1,4 +1,5 @@
 import Venue from "../models/Venue.models.js";
+import Booking from "../models/bookings.models.js";
 
 export const createVenue = async (req, res) => {
   const { name, location, description, price_per_hour } = req.body;
@@ -54,7 +55,7 @@ export const updateVenue = async (req, res) => {
     const venue = await Venue.findById(id);
 
     if (!venue) {
-      return res.status(404).json({ message: "Venue not found." });
+      return res.status(401).json({ message: "Venue not found." });
     }
 
     if (venue.ownerId.toString() !== ownerId.toString()) {
@@ -100,5 +101,25 @@ export const deleteVenue = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error deleting venue." });
+  }
+};
+
+export const venueBookings = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const venue = await Venue.findById(id);
+    if (!venue) {
+      return res.status(404).json({ message: "Venue not found." });
+    }
+
+    const bookings = await Booking.find({ venueId: id });
+
+    res.status(200).json({
+      message: "Bookings fetched successfully.",
+      bookings,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error in getting bookings." });
   }
 };

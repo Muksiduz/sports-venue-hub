@@ -1,4 +1,6 @@
 import User from "../models/User.models.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 //register user
 export const register = async (req, res) => {
@@ -14,7 +16,6 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       message: "User created successfully",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -22,7 +23,7 @@ export const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -38,14 +39,14 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1d",
     });
 
-    res.cookies("token", token, {
-      maxAge: 3600000 * 24,
+    res.cookie("token", token, {
+      maxAge: 3600000 * 24, // 24 hours
       httpOnly: true,
-      samesite: "strict",
+      sameSite: "Strict", // Capital S
     });
 
     res.json({
@@ -54,29 +55,30 @@ export const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 //logout user
 export const logout = async (req, res) => {
-  const id = req.user.id;
   try {
-    const user = await User.findOne({ _id: id });
-
-    res.clearCookie("auth_token", {
+    res.clearCookie("token", {
       httpOnly: true,
       sameSite: "Strict",
+      secure: false, // If you're testing locally
     });
 
-    res.json({
+    res.status(200).json({
+      success: true,
       message: "Logout successful",
     });
   } catch (error) {
-    res.status(500).json({ error: err.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Logout failed" });
   }
 };
 
